@@ -24,7 +24,7 @@ export async function addProduct(formData: FormData): Promise<{
   }
 
   const cookieStore = await cookies();
-  const token = cookieStore.get("visitorToken")?.value;
+  const token = cookieStore.get("visitor-token")?.value;
   if (!token) {
     return { message: "Authentication required" };
   }

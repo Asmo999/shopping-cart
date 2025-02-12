@@ -1,17 +1,10 @@
-// import { addProduct } from "@/actions/addProduct";
-import { AddToCartForm } from "@/components/AddToCart";
-import { getClient } from "@/lib/client";
+import { AddToCartForm } from "@/components/AddToCartForm";
+import { getClient } from "@/lib/apollo/ServerClient";
 import { gql } from "@apollo/client";
 import { Product } from "@/types";
 
-// const products = [
-//   { id: 1, name: "Product 1", price: 10, stock: 5 },
-//   { id: 2, name: "Product 2", price: 15, stock: 3 },
-//   { id: 3, name: "Product 3", price: 20, stock: 8 },
-// ];
-
 const GET_PRODUCTS_QUERY = gql`
-  query ExampleQuery {
+  query GetProducts {
     getProducts {
       products {
         cost
@@ -39,10 +32,10 @@ export default async function ProductList() {
               <p>${product.cost}</p>
               <p>In stock: {product.availableQuantity}</p>
             </div>
-            <AddToCartForm productId={product._id} />
-            {/*<button className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600">*/}
-            {/*  Add to Cart*/}
-            {/*</button>*/}
+            <AddToCartForm
+              availableQuantity={product.availableQuantity}
+              productId={product._id}
+            />
           </li>
         ))}
       </ul>

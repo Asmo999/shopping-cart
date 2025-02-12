@@ -16,7 +16,10 @@ export interface CartItem {
   updatedAt: string;
   addedAt: string;
 }
-
+export type Notification = {
+  type: "error" | "warning";
+  message: string;
+};
 export interface Cart {
   _id: string;
   hash: string;
@@ -25,7 +28,6 @@ export interface Cart {
   updatedAt: string;
 }
 
-// Optional: Other related types from the schema
 export interface GetProductsData {
   products: Product[];
   total: number;
