@@ -48,7 +48,7 @@ export async function removeProduct(formData: FormData): Promise<{
   `;
 
   try {
-    const response = await fetch(process.env.GRAPHQL_ENDPOINT!, {
+    const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT!, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

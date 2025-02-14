@@ -22,19 +22,15 @@ const QuantitySelect = ({
     startTransition(async () => {
       const formData = new FormData();
       let result;
+      formData.set("cartItemId", itemId);
       if (newQuantity === 0) {
-        formData.set("cartItemId", itemId);
         result = await removeProduct(formData);
       } else {
         formData.set("quantity", String(newQuantity));
         result = await updateItemQuantity(formData);
       }
-
       if (result.success) {
         refreshCart();
-        console.log("Quantity updated successfully:", result);
-      } else {
-        console.log("Error updating quantity:", result);
       }
     });
   };
@@ -46,16 +42,16 @@ const QuantitySelect = ({
 
   return (
     <div className="flex items-center gap-2">
-      <p className="text-sm text-gray-500">Quantity:</p>
+      <p className="text-xl text-gray-500 xl:text-sm">Quantity:</p>
       <select
         value={itemQuantity}
         onChange={handleQuantityChange}
         disabled={isPending}
-        className="rounded-md border px-2 py-1 text-sm text-black"
+        className="w-[50px] rounded-md border px-2 py-1 text-sm text-black xl:px-1 xl:py-[2px]"
       >
         {quantityOptions.map((quantity) => (
           <option key={quantity} value={quantity}>
-            {quantity}
+            {quantity === 0 ? `${quantity}(delete)` : quantity}
           </option>
         ))}
       </select>

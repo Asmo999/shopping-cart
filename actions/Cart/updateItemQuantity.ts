@@ -15,7 +15,6 @@ export async function updateItemQuantity(formData: FormData): Promise<{
     quantity: Number(formData.get("quantity")),
   };
   const validationResult = cartUpdateItemQuantitySchema.safeParse(rawData);
-  console.log({ validationResult });
   if (!validationResult.success) {
     return {
       errors: validationResult.error.flatten().fieldErrors,
@@ -38,7 +37,7 @@ export async function updateItemQuantity(formData: FormData): Promise<{
   `;
 
   try {
-    const response = await fetch(process.env.GRAPHQL_ENDPOINT!, {
+    const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT!, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

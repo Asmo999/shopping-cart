@@ -22,38 +22,50 @@ const CART_SUBSCRIPTION = gql`
 
 export function CartSubscription() {
   const { data, error } = useSubscription(CART_SUBSCRIPTION);
-  const [notification, setNotification] = useState<null | string>(null);
+  const [notifications, setNotifications] = useState<string[]>([]);
 
   useEffect(() => {
     if (data) {
       const { event, payload } = data.cartItemUpdate;
       if (event === "ITEM_OUT_OF_STOCK") {
-        setNotification(
+        setNotifications((prevNotifications) => [
+          ...prevNotifications,
           `Item "${payload.product.title}" is out of stock and removed from your cart.`,
-        );
+        ]);
       } else if (event === "ITEM_QUANTITY_UPDATED") {
-        setNotification(
+        setNotifications((prevNotifications) => [
+          ...prevNotifications,
           `Item "${payload.product.title}" quantity has been updated to ${payload.quantity}.`,
-        );
+        ]);
       }
     } else if (error) {
-      setNotification("Something went wrong...");
+      setNotifications((prevNotifications) => [
+        ...prevNotifications,
+        "Something went wrong...",
+      ]);
     }
   }, [data, error]);
 
-  const handleAcceptChanges = () => {
-    setNotification(null);
+  const handleAcceptChanges = (index: number) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.filter((_, i) => i !== index),
+    );
   };
 
   return (
-    notification && (
+    notifications.length > 0 && (
       <div className="notification-container">
-        <div className="notification-box">
-          <p>{notification}</p>
-          <button className="notification-btn" onClick={handleAcceptChanges}>
-            OK
-          </button>
-        </div>
+        {notifications.map((notification, index) => (
+          <div key={index} className="notification-box">
+            <p>{notification}</p>
+            <button
+              className="notification-btn"
+              onClick={() => handleAcceptChanges(index)}
+            >
+              OK
+            </button>
+          </div>
+        ))}
       </div>
     )
   );

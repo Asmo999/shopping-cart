@@ -7,8 +7,7 @@ import type { Cart } from "@/types";
 export async function addProduct(formData: FormData): Promise<{
   success?: boolean;
   cart?: Cart;
-  message?: string;
-  errors?: Record<string, string[]>;
+  error?: string;
 }> {
   const rawData = {
     productId: formData.get("productId"),
@@ -18,15 +17,18 @@ export async function addProduct(formData: FormData): Promise<{
   const validationResult = cartAddItemSchema.safeParse(rawData);
   if (!validationResult.success) {
     return {
-      errors: validationResult.error.flatten().fieldErrors,
-      message: "Invalid form data",
+      success: false,
+      error: "Invalid form data",
     };
   }
 
   const cookieStore = await cookies();
   const token = cookieStore.get("visitor-token")?.value;
   if (!token) {
-    return { message: "Authentication required" };
+    return {
+      success: false,
+      error: "Authentication required",
+    };
   }
 
   const mutation = `
@@ -49,7 +51,7 @@ export async function addProduct(formData: FormData): Promise<{
   `;
 
   try {
-    const response = await fetch(process.env.GRAPHQL_ENDPOINT!, {
+    const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT!, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -69,12 +71,29 @@ export async function addProduct(formData: FormData): Promise<{
     const { data, errors } = await response.json();
 
     if (errors) {
-      return { message: errors[0].message };
+      try {
+        const errorData = JSON.parse(errors[0].message);
+        return {
+          success: false,
+          error: errorData[0].message,
+        };
+      } catch {
+        return {
+          success: false,
+          error: errors[0].message,
+        };
+      }
     }
 
-    return { success: true, cart: data.addItem };
+    return {
+      success: true,
+      cart: data.addItem,
+    };
   } catch (error) {
     console.error("Add product error:", error);
-    return { message: "Failed to add product - please try again" };
+    return {
+      success: false,
+      error: "Failed to add product - please try again",
+    };
   }
 }

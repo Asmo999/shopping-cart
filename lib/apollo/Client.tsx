@@ -59,7 +59,6 @@ const wsLink = new GraphQLWsLink(
     connectionParams: async () => {
       try {
         const token = await getVisitorToken();
-        console.log("Token for WebSocket connection:", token);
         return {
           authToken: token || "",
         };

@@ -1,15 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext } from "react";
 import { useQuery } from "@apollo/client";
 import { gql } from "@apollo/client";
-import { Cart, Notification } from "@/types";
+import { Cart } from "@/types";
 
 type CartContextType = {
   cart: Cart | null;
-  notifications: Notification[];
-  showNotification: (notification: Notification) => void;
-  dismissNotification: () => void;
   refreshCart: () => void;
 };
 
@@ -27,6 +24,7 @@ export const GET_CART = gql`
           _id
           title
           availableQuantity
+          cost
         }
       }
     }
@@ -34,25 +32,7 @@ export const GET_CART = gql`
 `;
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const { data, loading, error, refetch } = useQuery(GET_CART);
-
-  useEffect(() => {
-    if (error) {
-      showNotification({
-        type: "error",
-        message: "Failed to fetch cart data",
-      });
-    }
-  }, [error]);
-
-  const showNotification = (notification: Notification) => {
-    // setNotifications((prev) => [...prev, notification]);
-  };
-
-  const dismissNotification = () => {
-    setNotifications((prev) => prev.slice(1));
-  };
+  const { data, refetch } = useQuery(GET_CART);
 
   const refreshCart = () => {
     refetch();
@@ -62,9 +42,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     <CartContext.Provider
       value={{
         cart: data?.getCart || null,
-        notifications,
-        showNotification,
-        dismissNotification,
         refreshCart,
       }}
     >

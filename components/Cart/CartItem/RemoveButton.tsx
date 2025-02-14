@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { removeProduct } from "@/actions/Cart/removeProduct";
 import { useCart } from "@/context/CartContext";
+import { Trash2 } from "lucide-react";
 
 export function RemoveButton({ cartItemId }: { cartItemId: string }) {
   const [isPending, startTransition] = useTransition();
@@ -25,9 +26,9 @@ export function RemoveButton({ cartItemId }: { cartItemId: string }) {
     <button
       onClick={handleRemove}
       disabled={isPending}
-      className="text-red-500 hover:text-red-700"
+      className="mt-2 flex items-center gap-1 rounded-md border px-2 py-1 text-sm text-red-500 hover:text-red-700"
     >
-      {isPending ? "Removing..." : "Remove"}
+      {isPending ? "..." : <Trash2 className="h-[20px]" />}
     </button>
   );
 }
