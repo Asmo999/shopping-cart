@@ -8,7 +8,7 @@ import { setContext } from "@apollo/client/link/context";
 import { cookies } from "next/headers";
 
 const httpLink = new HttpLink({
-  uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
+  uri: process.env.GRAPHQL_ENDPOINT,
 });
 
 const authLink = setContext(async (_, { headers }) => {
